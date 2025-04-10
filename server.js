@@ -170,7 +170,7 @@ app.post("/generate-file", (req, res) => {
         }
         document.end()
         writeStream.on("finish", () => {
-            return res.status(200).json({fileName})
+            return res.status(200).json({success: "File Downloaded Successfully!", fileName})
         })
         writeStream.on("error", (err) => {
             return res.status(500).json({error: err.message})
@@ -182,22 +182,16 @@ app.post("/generate-file", (req, res) => {
 
 app.get("/download", (req, res) => {
     try {
-        const fileName = decodeURIComponent(req.query.file) 
-
-        if(!fileName){
-            return res.status(400).json({error: "Please Generate & View Resume First!"})
+        const files = fs.readdirSync(PDFDIR)
+        if(files.length > 0){
+            const oldFile = files[0]
+            const filepath = path.join(PDFDIR, oldFile)
+            res.download(filepath, oldFile)
         }
-
-        const filePath = decodeURIComponent(path.join(PDFDIR, fileName)) 
-
-        return res.download(filePath, fileName, (err) => {
-            if(err){
-                return res.status(500).json({error: "Something Went Wrong!!!"})
-            }
-        })
     } catch (error) {
         return res.status(500).json({error: error})
     }
+    
 })
 
 const port = process.env.PORT || 4000
