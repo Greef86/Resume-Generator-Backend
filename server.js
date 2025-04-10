@@ -191,7 +191,7 @@ app.get("/display-file", (req, res) => {
         const oldFile = files[0]
         const filePath = path.join(PDFDIR, oldFile)
         res.setHeader("Content-Type", "application/pdf")
-        res.setHeader("Content-Disposition", `inline; filename=${filePath}`)
+        res.setHeader("Content-Disposition", `inline; filename=${oldFile}`)
     
         return res.sendFile(filePath)
     }
