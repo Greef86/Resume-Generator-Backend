@@ -170,30 +170,13 @@ app.post("/generate-file", (req, res) => {
         }
         document.end()
         writeStream.on("finish", () => {
-            return res.status(200).json({
-                success: "SUCCESS: Please wait...",
-                fileName,
-                downloadLink: `http://localhost:8000/download?file=${fileName}`
-            })
+            return res.status(200).json({fileName})
         })
         writeStream.on("error", (err) => {
             return res.status(500).json({error: err.message})
         })
     } catch (error) {
         return res.status(500).json({error: error})
-    }
-})
-
-app.get("/display-file", (req, res) => {
-
-    const files = fs.readdirSync(PDFDIR)
-    if(files.length > 0){
-        const oldFile = files[0]
-        const filePath = path.join(PDFDIR, oldFile)
-        res.setHeader("Content-Type", "application/pdf")
-        res.setHeader("Content-Disposition", `inline; filename=${oldFile}`)
-    
-        return res.sendFile(filePath)
     }
 })
 
